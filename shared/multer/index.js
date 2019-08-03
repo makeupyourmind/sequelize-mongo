@@ -1,4 +1,5 @@
 const multer = require('multer');
+const path = require('path');
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -11,11 +12,17 @@ const storage = multer.diskStorage({
 
 
 const fileFilter = (req, file, cb) => {
-    // reject a file
-    if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') {
-      cb(null, true);
+
+    const filetypes = /jpeg|jpg|png|gif/;
+
+    const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+
+    const mimetype = filetypes.test(file.mimetype);
+
+    if(mimetype && extname){
+      return cb(null,true);
     } else {
-      cb(null, false);
+      cb(new Error('Error: Images Only!'));
     }
 };
   
@@ -26,6 +33,6 @@ const upload = multer({
         fileSize: 1024 * 1024 * 5
     },
     fileFilter: fileFilter
-});
+}).single('avatar');
 
 module.exports = upload;

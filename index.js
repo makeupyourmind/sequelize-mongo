@@ -1,11 +1,15 @@
 const express = require('express');
 const app = express();
+const https = require('https');
+const http = require('http');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const upload = require('./shared/multer');
 const User = require('./mongo/user_mongo');
 const { check } = require('express-validator');
 const validate = require('./middleware/checkError');
+const fs = require('fs');
+
 require('dotenv').config();
 
 const {Tester, sequelize} = require("./models");
@@ -16,22 +20,32 @@ sequelize.sync().then(function() {
     console.log(err, "Something went wrong with the Database Update!")
 });
 
-mongoose.connect('mongodb://localhost:27017/2', {useNewUrlParser: true}, function(err){
-  if(err){
-    console.log('Erro connect to DB', err);
-  }
-  console.log("Connected to DB");
-});
+// mongoose.connect('mongodb://localhost:27017/2', {useNewUrlParser: true}, function(err){
+//   if(err){
+//     console.log('Erro connect to DB', err);
+//   }
+//   console.log("Connected to DB");
+// });
 
 
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 app.use('/uploads', express.static('uploads'));
 
-app.post('/profile', upload.single('avatar'), function (req, res, next) {
-    console.log("req.body : ", req.body);
-    console.log(req.file);
-});
+// app.post('/profile', function (req, res, next) {
+//     console.log("req.body : ", req.body);
+//     console.log(req.file);
+// });
+
+app.post('/profile', function (req, res) {
+  upload(req, res, function (err) {
+    console.log("err  : ", err);
+    if (err) {
+      return res.status(400).send(err.message)
+    }
+    res.send('ok');
+  })
+})
 
 app.post('/createMongoUser', async (req,res) => {
 
@@ -67,4 +81,15 @@ app.get('/', async (req, res) => {
     }
 })
 
-app.listen(3000, () => console.log("App listening on port 3000"));
+const options = {
+  key: fs.readFileSync("device.key"),
+  cert: fs.readFileSync("nomidman.crt")
+}
+
+
+const server = https.createServer(options, app);
+
+server.listen(3000, function () {
+ console.log('Express server is up on port 3000');
+});
+//app.listen(3000, () => console.log("App listening on port 3000"));
