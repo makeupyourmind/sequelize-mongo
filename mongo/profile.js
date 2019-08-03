@@ -17,6 +17,9 @@ const Profile = new Schema ({
     },
     bio: {
       type: Schema.Types.String,
+    },
+    avatar: {
+        type: String
     }
 })
 

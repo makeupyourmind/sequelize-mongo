@@ -38,15 +38,45 @@ app.use('/uploads', express.static('uploads'));
 //     console.log(req.file);
 // });
 
-app.post('/profilePhoto', function (req, res) {
-  upload(req, res, function (err) {
+app.patch('/profilePhoto/:id', async function (req, res) {
+
+  upload(req, res, async function (err) {
     console.log("err  : ", err);
     if (err) {
       return res.status(400).send(err.message)
     }
-    res.send('ok');
+
+    try {
+      console.log("AAAAAAAAAAAA", req.file.path);
+      let response = await Profile.findOneAndUpdate({user: req.params.id}, {avatar: req.file.path}, {new: true});
+      console.log("RESPONSE : ", response.avatar);
+      res.status(200).json({response});
+    } catch (error) {
+      res.status(400).send(error.message);
+    }
+
   })
+
+  // try {
+  //   if(req.file){
+  //     console.log("req.file", req.file);
+  //   }
+  //   // let response = await Profile.findOneAndUpdate({user: req.params.id}, req.file.patchname, {new: true});
+  //   // res.status(200).json({response});
+  // } catch (error) {
+  //   res.status(400).send(error.message);
+  // }
 });
+
+app.get('/getProfile/:id', async (req, res) => {
+  try {
+    let response = await Profile.findOne({user: req.params.id});
+    console.log("RESPONSE GET AVATAR : ", response.avatar)
+     res.status(200).send(response);
+  } catch (error) {
+    res.status(400).send(error.message);
+  }
+})
 
 app.post('/createUser', async (req, res) => {
   try {
@@ -60,7 +90,7 @@ app.post('/createUser', async (req, res) => {
 app.patch('/updateProfile/:id', async (req, res) => {
 
     try {
-      
+       req.body.user = req.params.id;
        let response = await Profile.findOneAndUpdate({user: req.params.id}, req.body, {new: true});
 
        if(response === null){
