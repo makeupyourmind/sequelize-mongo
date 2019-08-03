@@ -10,6 +10,7 @@ const Profile = require('./mongo/profile');
 const { check } = require('express-validator');
 const validate = require('./middleware/checkError');
 const fs = require('fs');
+const {Service} = require('./Service');
 
 require('dotenv').config();
 
@@ -38,23 +39,14 @@ app.use('/uploads', express.static('uploads'));
 //     console.log(req.file);
 // });
 
-app.patch('/profilePhoto/:id', async function (req, res) {
+app.patch('/profilePhoto/:id', function (req, res) {
 
-  upload(req, res, async function (err) {
+  upload(req, res, function (err) {
     console.log("err  : ", err);
     if (err) {
       return res.status(400).send(err.message)
     }
-
-    try {
-      console.log("AAAAAAAAAAAA", req.file.path);
-      let response = await Profile.findOneAndUpdate({user: req.params.id}, {avatar: req.file.path}, {new: true});
-      console.log("RESPONSE : ", response.avatar);
-      res.status(200).json({response});
-    } catch (error) {
-      res.status(400).send(error.message);
-    }
-
+    Service.profilePhoto(req,res);
   })
 
   // try {
