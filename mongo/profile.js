@@ -1,11 +1,11 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const User = new Schema ({
+const Profile = new Schema ({
     id: Schema.Types.ObjectId,
+    user: Schema.Types.ObjectId,
     name: {
         type: Schema.Types.String,
-        unique: true,
     }, 
     phoneNumber: {
         type: String,
@@ -13,7 +13,6 @@ const User = new Schema ({
     },
     email: {
         type: Schema.Types.String,
-        required: 'Email address is required',
         match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'Please fill a valid email address']
     },
     bio: {
@@ -22,4 +21,4 @@ const User = new Schema ({
 })
 
 
-module.exports = mongoose.model('User', User);
+module.exports = mongoose.model('Profile', Profile);

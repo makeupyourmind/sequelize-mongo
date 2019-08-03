@@ -6,6 +6,7 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const upload = require('./shared/multer');
 const User = require('./mongo/user_mongo');
+const Profile = require('./mongo/profile');
 const { check } = require('express-validator');
 const validate = require('./middleware/checkError');
 const fs = require('fs');
@@ -20,12 +21,12 @@ sequelize.sync().then(function() {
     console.log(err, "Something went wrong with the Database Update!")
 });
 
-// mongoose.connect('mongodb://localhost:27017/2', {useNewUrlParser: true}, function(err){
-//   if(err){
-//     console.log('Erro connect to DB', err);
-//   }
-//   console.log("Connected to DB");
-// });
+mongoose.connect('mongodb://localhost:27017/2', {useNewUrlParser: true}, function(err){
+  if(err){
+    console.log('Erro connect to DB', err);
+  }
+  console.log("Connected to DB");
+});
 
 
 app.use(bodyParser.urlencoded({ extended: false }))
@@ -37,7 +38,7 @@ app.use('/uploads', express.static('uploads'));
 //     console.log(req.file);
 // });
 
-app.post('/profile', function (req, res) {
+app.post('/profilePhoto', function (req, res) {
   upload(req, res, function (err) {
     console.log("err  : ", err);
     if (err) {
@@ -45,6 +46,31 @@ app.post('/profile', function (req, res) {
     }
     res.send('ok');
   })
+});
+
+app.post('/createUser', async (req, res) => {
+  try {
+    let response = await User.create(req.body);
+    res.status(200).send(response);
+  } catch (error) {
+    res.status(400).send(error.message);
+  }
+})
+
+app.patch('/updateProfile/:id', async (req, res) => {
+
+    try {
+      
+       let response = await Profile.findOneAndUpdate({user: req.params.id}, req.body, {new: true});
+
+       if(response === null){
+          response = await Profile.create(req.body);
+       }
+
+       res.status(200).json({response});
+    } catch (error) {
+      res.status(400).send(error.message);
+    }
 })
 
 app.post('/createMongoUser', async (req,res) => {
