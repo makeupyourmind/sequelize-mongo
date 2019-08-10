@@ -6,7 +6,12 @@ module.exports = (sequelize, DataTypes) => {
     lastName: DataTypes.STRING
   }, {});
   User.associate = function(models) {
-    User.belongsTo(models.Company, {foreignKey: 'CompanyId', as: 'company'})
+    User.belongsTo(models.Company, {foreignKey: 'CompanyId', as: 'company'});
+    User.belongsToMany(models.Groups, {
+      through: 'GroupUsers',
+      as: 'groups',
+      foreignKey: 'UserId'
+    });
   };
   return User;
 };

@@ -18,6 +18,8 @@ require('dotenv').config();
 let models = require("./models");
 const User = models.User;
 const Company = models.Company;
+const Groups = models.Groups;
+const GroupUsers = models.GroupUsers;
 
 models.sequelize.sync().then(function() {
     console.log('Nice! Database looks fine')
@@ -195,6 +197,46 @@ app.patch('/updateUser/:id', (req, res) => {
   .catch((error) => {
     res.status(400).send(error.message);
   })
+});
+
+app.post('/groupCreate', async(req, res) => {
+  const savedGroup = await Groups.create(req.body);
+
+  req.body.users.split(',').forEach(async (item) => {
+      const user = await User.findByPk(item);
+
+      if (!user) {
+        return res.status(400).send("Doesn't exist");
+      }
+
+      const us = {
+        UserId : item,
+        GroupId : savedGroup.id
+      } 
+      const savedUsersGroup = await GroupUsers.create(us);
+  })
+
+  return res.status(200).json(savedGroup)
+})
+
+app.get('/getAllGroup', async (req, res) => {
+
+    const allGroups= await Groups.findAll({
+
+      include: [{
+        model: User,
+        as: 'users',
+        required: false,
+        attributes: ['id', 'firstName', 'lastName', 'email'],
+        through: {
+          model: GroupUsers,
+          as: 'groupUsers',
+        }
+      }]
+    });
+
+    // If everything goes well respond with the orders
+    return res.status(200).json({allGroups})
 })
 
 app.get('/', async (req, res) => {
