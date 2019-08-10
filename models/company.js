@@ -4,7 +4,7 @@ module.exports = (sequelize, DataTypes) => {
     name: DataTypes.STRING
   }, {});
   Company.associate = function(models) {
-    Company.hasMany(models.User, {as: 'employes'})
+    Company.hasMany(models.User, {as: 'employes', onDelete: "cascade", hooks: true})
   };
   return Company;
 };

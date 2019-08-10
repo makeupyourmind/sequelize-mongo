@@ -17,10 +17,9 @@ module.exports = {
       lastName: {
         type: Sequelize.STRING
       },
-      companyId: {
+      CompanyId: {
         type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {         // User belongsTo Company 1:1
+        references: {         // User hasMany WorkingDays n:n
           model: 'Companies',
           key: 'id'
         }

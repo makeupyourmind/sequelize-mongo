@@ -108,9 +108,9 @@ app.post('/',  [
 
 });
 
-app.post('/createUser', async (req, res) => {
+app.post('/createUser/:companyId', async (req, res) => {
   try {
-    let response = await User.create(req.body);
+    let response = await User.create({...req.body, CompanyId: req.params.companyId});
     res.json({response});
   } catch (error) {
     res.status(400).send(error.message);
@@ -127,25 +127,75 @@ app.post('/createCompany', async (req, res) => {
 });
 
 
-app.get('/getUser', async(req, res) => {
+app.get('/getUsers', async(req, res) => {
   try {
-    let response = await User.findOne({
-      where: {email: 'test'}, include: [{model: Company, as: 'company', where: { name: 'testCompany' }}]
-    })
+    let response = await User.findAll({include: {model :  Company, as: 'company'}})
     res.json({response});
   } catch (error) {
     res.status(400).send(error.message);
   }
 });
 
-app.get('/getCompany', async(req, res) => {
-try {
-  let response = await Company.findAll({include: ['employes']});
-  res.json({response});
-} catch (error) {
-  res.status(400).send(error.message);
-}
+app.get('/getCompanies', async(req, res) => {
+  try {
+    let response = await Company.findAll({include: {model :  User, as: 'employes'} });
+    res.json({response});
+  } catch (error) {
+    res.status(400).send(error.message);
+  }
 });
+
+app.delete('/deleteCompany/:id', async(req, res) => {
+  Company.findByPk(req.params.id)
+  .then((company) => {
+    return company.destroy();
+  })
+  .then(company => {
+    res.json({company});
+  })
+  .catch((error) => {
+    res.status(400).send(error.message);
+  });
+});
+
+app.delete('/deleteUser/:id', async(req, res) => {
+  User.findByPk(req.params.id)
+  .then(user => {
+    return user.destroy();
+  })
+  .then(user => {
+    res.json({user});
+  })
+  .catch((error) => {
+    res.status(400).send(error.message);
+  });
+});
+
+app.patch('/updateCompany/:id', (req, res) => {
+  Company
+  .findByPk(req.params.id).then((company) => {
+      return company.update(req.body)
+  })
+  .then((updated) => {
+    res.send(updated);
+  })
+  .catch((error) => {
+    res.status(400).send(error.message);
+  })
+})
+
+app.patch('/updateUser/:id', (req, res) => {
+  User
+  .findByPk(req.params.id).then(user => {
+      return user.update({...req.body, CompanyId: req.params.companyId})
+  })
+  .then((updated) => {
+    res.send(updated);
+  })
+  .catch((error) => {
+    res.status(400).send(error.message);
+  })
+})
 
 app.get('/', async (req, res) => {
   
