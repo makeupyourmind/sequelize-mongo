@@ -7,7 +7,7 @@ module.exports = (sequelize, DataTypes) => {
     CompanyId: DataTypes.INTEGER
   }, {});
   User.associate = function(models) {
-    User.belongsTo(models.Company, {foreignKey: 'CompanyId', onDelete: "NO ACTION" , as: 'company'});
+    User.belongsTo(models.Company, {foreignKey: 'CompanyId', as: 'company'});
     User.belongsToMany(models.Groups, {
       through: 'GroupUsers',
       as: 'groups',
