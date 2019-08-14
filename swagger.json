@@ -1,0 +1,334 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "version": "1.0.0",
+        "title": "My API",
+        "description": "A minimal and easy to follow example of what you need to create a CRUD style API in Node.js",
+        "license": {
+            "name": "MIT",
+            "url": "https://opensource.org/licenses/MIT"
+        }
+    },
+    "tags": [
+        {
+            "name": "Users",
+            "description": "API for User in the system"
+        },
+        {
+            "name": "Companies",
+            "description": "API for Company in the system"
+        }
+    ],
+    "paths": {
+        "/users": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Get all users in system",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#\/definitions\/User"
+                        }
+                    }
+                }
+            }
+        },
+        "/users/{id}": {
+            "parameters": [
+                {
+                    "name": "id",
+                    "in": "path",
+                    "required": true,
+                    "description": "ID of the user at that we want to match",
+                    "type": "string"
+                }
+            ],
+            "get" : {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Get a user in system by id",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "description": "User with new values of properties",
+                        "schema": {
+                            "$ref": "#/definitions/id"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/User"
+                        }
+                    },
+                    "404": {
+                        "description": "Failed. User not found."
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Create a new user in system",
+                "requestBody": {
+                    "description": "User Object",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#\/definitions\/User"
+                            }
+                        }
+                    }
+                },
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "description": "Company ID",
+                        "schema": {
+                            "$ref": "#/definitions/id"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/id"
+                        }
+                    },
+                    "400": {
+                        "description": "Failed. Bad post data."
+                    }
+                }
+            }
+        },
+        "/companies": {
+            "post": {
+                "tags": [
+                    "Companies"
+                ],
+                "summary": "Create a company in system",
+                "requestBody": {
+                    "description": "Company Object",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#\/definitions\/Company"
+                            }
+                        }
+                    }
+                },
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#\/definitions\/Company"
+                        }
+                    },
+                    "400": {
+                        "description" : "Failed. Bad post data."
+                    }
+                }
+            },
+            "get": {
+                "tags": [
+                    "Companies"
+                ],
+                "summary": "Get all companies in system",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#\/definitions\/Company"
+                        }
+                    }
+                }
+            }
+        },
+        "/companies/{id}": {
+            "parameters": [
+                {
+                    "name": "id",
+                    "in": "path",
+                    "required": true,
+                    "description": "ID of the company at that we want to match",
+                    "type": "string"
+                }
+            ],
+            "get" : {
+                "tags": [
+                    "Companies"
+                ],
+                "summary": "Get a comapny in system by id",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "description": "Comapny with values of properties",
+                        "schema": {
+                            "$ref": "#/definitions/id"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/Company"
+                        }
+                    },
+                    "400": {
+                        "description": "Failed. Company not found."
+                    },
+                    "404": {
+                        "description": "Company not found while getting data"
+                    }
+                }
+            },
+            "delete": {
+                "tags" : [
+                    "Companies"
+                ],
+                "summary": "Delete a company in system by id",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "description": "ID of company that to delete",
+                        "schema": {
+                            "$ref": "#/definitions/id"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/Company"
+                        }
+                    },
+                    "400": {
+                        "description": "Failed. Company not found."
+                    },
+                    "404" : {
+                        "description": "Company not found"
+                    }
+                }
+            },
+            "patch": {
+                "tags": [
+                    "Companies"
+                ],
+                "summary": "Update a company in system by id",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "description": "ID of company that to delete",
+                        "schema": {
+                            "$ref": "#/definitions/id"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/Company"
+                        }
+                    },
+                    "400": {
+                        "description": "Failed. Bad update request."
+                    },
+                    "404" : {
+                        "description": "Company not found"
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "id": {
+            "properties": {
+                "uuid": {
+                    "type": "string"
+                }
+            }
+        },
+        "User": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "firstName": {
+                    "type": "string"
+                },
+                "lastName": {
+                    "type": "string"
+                },
+                "CompanyId": {
+                    "type": "integer"
+                }
+            }
+        },
+        "Users": {
+            "type": "object",
+            "properties": {
+                "users": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "$ref": "#\/definitions\/User"
+                    }
+                }
+            }
+        },
+        "Company": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "Companies": {
+            "type": "object",
+            "properties": {
+                "companies": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "$ref": "#\/definitions\/Company"
+                    }
+                }
+            }
+        }
+    }
+}

@@ -18,6 +18,7 @@ module.exports = {
         type: Sequelize.STRING
       },
       CompanyId: {
+        allowNull: true,
         type: Sequelize.INTEGER,
         references: {         // User hasMany WorkingDays n:n
           model: 'Companies',
